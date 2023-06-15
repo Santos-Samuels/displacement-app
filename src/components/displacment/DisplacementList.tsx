@@ -1,5 +1,4 @@
 import { Displacement } from "@/shared/interfaces/displacement.interface";
-import { DisplacementService } from "@/shared/services";
 import { formatInterval } from "@/shared/utils/calculateInterval";
 import {
   Paper,
@@ -10,25 +9,17 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
 
-const DisplacementList = () => {
-  const [displacements, setDisplacements] = useState<Displacement[]>([]);
+interface Props {
+  displacements?: Displacement[];
+}
 
-  useEffect(() => {
-    const fetchDisplacements = async () => {
-      const { data } = await DisplacementService().getAll();
-      setDisplacements(data);
-    };
-
-    fetchDisplacements();
-  }, []);
-
+const DisplacementList = ({ displacements }: Props) => {
   return (
     <div>
       <h1>Lista de Deslocamentos</h1>
 
-      {displacements.length ? (
+      {displacements?.length ? (
         <TableContainer component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>
@@ -53,9 +44,7 @@ const DisplacementList = () => {
                       new Date(displacement.fimDeslocamento)
                     )}
                   </TableCell>
-                  <TableCell align="center">
-                    {displacement.checkList}
-                  </TableCell>
+                  <TableCell align="center">{displacement.checkList}</TableCell>
                   <TableCell align="center">-</TableCell>
                 </TableRow>
               ))}

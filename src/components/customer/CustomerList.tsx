@@ -1,5 +1,4 @@
 import { Customer } from "@/shared/interfaces/customer.interface";
-import CostumerService from "@/shared/services/customer.service";
 import {
   Paper,
   Table,
@@ -9,25 +8,17 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
 
-const CustomerList = () => {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+interface Props {
+  customers?: Customer[];
+}
 
-  useEffect(() => {
-    const fetchCustomers = async () => {
-      const { data } = await CostumerService().getAll();
-      setCustomers(data);
-    };
-
-    fetchCustomers();
-  }, []);
-
+const CustomerList = ({ customers }: Props) => {
   return (
     <div>
       <h1>Lista de Clientes</h1>
 
-      {customers.length ? (
+      {customers?.length ? (
         <TableContainer component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>

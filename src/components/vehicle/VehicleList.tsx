@@ -1,5 +1,4 @@
 import { Vehicle } from "@/shared/interfaces/vehicle.interface";
-import VehicleService from "@/shared/services/vehicle.service";
 import {
   Paper,
   Table,
@@ -9,25 +8,17 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
 
-const VehicleList = () => {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+interface Props {
+  vehicles?: Vehicle[];
+}
 
-  useEffect(() => {
-    const fetchVehicles = async () => {
-      const { data } = await VehicleService().getAll();
-      setVehicles(data);
-    };
-
-    fetchVehicles();
-  }, []);
-
+const VehicleList = ({ vehicles }: Props) => {
   return (
     <div>
       <h1>Lista de Veículos</h1>
 
-      {vehicles.length ? (
+      {vehicles?.length ? (
         <TableContainer component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>
@@ -45,18 +36,10 @@ const VehicleList = () => {
                 <TableRow key={vehicle.id}>
                   <TableCell align="center">{index}</TableCell>
                   <TableCell align="center">{vehicle.placa}</TableCell>
-                  <TableCell align="center">
-                    {vehicle.marcaModelo}
-                  </TableCell>
-                  <TableCell align="center">
-                    {vehicle.anoFabricacao}
-                  </TableCell>
-                  <TableCell align="center">
-                    {vehicle.kmAtual}
-                  </TableCell>
-                  <TableCell align="center">
-                    -
-                  </TableCell>
+                  <TableCell align="center">{vehicle.marcaModelo}</TableCell>
+                  <TableCell align="center">{vehicle.anoFabricacao}</TableCell>
+                  <TableCell align="center">{vehicle.kmAtual}</TableCell>
+                  <TableCell align="center">-</TableCell>
                 </TableRow>
               ))}
             </TableBody>

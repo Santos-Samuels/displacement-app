@@ -1,12 +1,24 @@
-'use client'
-import { DisplacementList } from "@/components"
+"use client";
+import { AppContainer, DisplacementList } from "@/components";
+import { DisplacementService } from "@/shared/services";
+import useSWR from "swr";
 
 const DisplacementPage = () => {
-  return (
-    <main>
-      <DisplacementList />
-    </main>
-  )
-}
+  const { data, error, isLoading } = useSWR(
+    "/v1/deslocamento",
+    fetchDisplacements
+  );
 
-export default DisplacementPage
+  return (
+    <AppContainer isLoading={isLoading} hasError={error}>
+      <DisplacementList displacements={data} />
+    </AppContainer>
+  );
+};
+
+export default DisplacementPage;
+
+const fetchDisplacements = async () => {
+  const { data } = await DisplacementService().getAll();
+  return data;
+};

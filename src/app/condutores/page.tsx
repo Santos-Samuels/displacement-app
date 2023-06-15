@@ -1,12 +1,21 @@
-'use client'
-import { ConductorList } from "@/components"
+"use client";
+import { AppContainer, ConductorList } from "@/components";
+import { ConductorService } from "@/shared/services";
+import useSWR from "swr";
 
 const ConductorPage = () => {
-  return (
-    <main>
-      <ConductorList />
-    </main>
-  )
-}
+  const { data, error, isLoading } = useSWR("/v1/condutor", fetchConductors);
 
-export default ConductorPage
+  return (
+    <AppContainer isLoading={isLoading} hasError={error}>
+      <ConductorList conductors={data} />
+    </AppContainer>
+  );
+};
+
+export default ConductorPage;
+
+const fetchConductors = async () => {
+  const { data } = await ConductorService().getAll();
+  return data;
+};

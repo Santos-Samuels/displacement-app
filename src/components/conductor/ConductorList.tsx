@@ -1,5 +1,4 @@
 import { Conductor } from "@/shared/interfaces/conductor.interface";
-import { ConductorService } from "@/shared/services";
 import {
   Paper,
   Table,
@@ -9,25 +8,17 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
 
-const ConductorList = () => {
-  const [conductors, setConductors] = useState<Conductor[]>([]);
+interface Props {
+  conductors?: Conductor[];
+}
 
-  useEffect(() => {
-    const fetchConductors = async () => {
-      const { data } = await ConductorService().getAll();
-      setConductors(data);
-    };
-
-    fetchConductors();
-  }, []);
-
+const ConductorList = ({ conductors }: Props) => {
   return (
     <div>
       <h1>Lista de Condutores</h1>
 
-      {conductors.length ? (
+      {conductors?.length ? (
         <TableContainer component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>
