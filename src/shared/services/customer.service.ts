@@ -1,12 +1,12 @@
-import { Costumer, CostumerCreateInput } from "../interfaces/customer.interface";
+import { Customer, CustomerCreateInput } from "../interfaces/customer.interface";
 import api from "./api";
 
-const CostumerService = () => {
-  async function create(input: CostumerCreateInput) {
+const CustomerService = () => {
+  async function create(input: CustomerCreateInput) {
     return api.post('/v1/cliente', input);
   }
 
-  async function update(input: Costumer) {
+  async function update(input: Customer) {
     return api.put(`/v1/cliente/${input.id}`, input);
   }
 
@@ -15,11 +15,11 @@ const CostumerService = () => {
   }
 
   async function getById(id: string) {
-    return api.get<Costumer>(`/v1/cliente/${id}`);
+    return api.get<Customer>(`/v1/cliente/${id}`);
   }
 
   async function getAll() {
-    return api.get<Costumer[]>('/v1/cliente');
+    return api.get<Customer[]>('/v1/cliente');
   }
 
   return {
@@ -31,4 +31,4 @@ const CostumerService = () => {
   };
 }
 
-export default CostumerService;
+export default CustomerService;
