@@ -1,4 +1,4 @@
-export default interface Costumer {
+export interface Customer {
   id: string;
   numeroDocumento: string;
   tipoDocumento: string;
@@ -10,4 +10,4 @@ export default interface Costumer {
   uf: string;
 }
 
-export interface CostumerCreateInput extends Omit<Costumer, "id"> {}
+export interface CustomerCreateInput extends Omit<Customer, "id"> {}
