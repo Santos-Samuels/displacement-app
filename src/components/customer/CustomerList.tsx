@@ -1,4 +1,5 @@
 import { Customer } from "@/shared/interfaces/customer.interface";
+import { CustomerService } from "@/shared/services";
 import {
   Paper,
   Table,
@@ -8,12 +9,27 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { toast } from "react-toastify";
+import { useSWRConfig } from "swr";
+import CustomerItem from "./CustomerItem";
 
 interface Props {
   customers?: Customer[];
 }
 
 const CustomerList = ({ customers }: Props) => {
+  const { mutate } = useSWRConfig();
+
+  const handleDelete = async (id: number) => {
+    try {
+      await CustomerService().remove(id);
+      toast.success("Cliente removido com sucesso.");
+      mutate("/v1/cliente");
+    } catch (error) {
+      toast.error("Erro ao remover o cliente.");
+    }
+  };
+
   return (
     <div>
       <h1>Lista de Clientes</h1>
@@ -30,15 +46,13 @@ const CustomerList = ({ customers }: Props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.map((customer) => (
-                <TableRow key={customer.id}>
-                  <TableCell align="center">{customer.id}</TableCell>
-                  <TableCell align="center">{customer.nome}</TableCell>
-                  <TableCell align="center">
-                    {customer.numeroDocumento}
-                  </TableCell>
-                  <TableCell align="center">-</TableCell>
-                </TableRow>
+              {customers.map((customer, index) => (
+                <CustomerItem
+                  index={index + 1}
+                  onDelete={handleDelete}
+                  {...customer}
+                  key={customer.id}
+                />
               ))}
             </TableBody>
           </Table>
