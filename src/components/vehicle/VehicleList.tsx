@@ -1,4 +1,5 @@
 import { Vehicle } from "@/shared/interfaces/vehicle.interface";
+import { VehicleService } from "@/shared/services";
 import {
   Paper,
   Table,
@@ -8,12 +9,27 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { toast } from "react-toastify";
+import { useSWRConfig } from "swr";
+import VehicleItem from "./VehicleItem";
 
 interface Props {
   vehicles?: Vehicle[];
 }
 
 const VehicleList = ({ vehicles }: Props) => {
+  const { mutate } = useSWRConfig();
+
+  const handleDelete = async (id: number) => {
+    try {
+      await VehicleService().remove(id);
+      toast.success("Veículo removido com sucesso.");
+      mutate("/v1/veiculo");
+    } catch (error) {
+      toast.error("Erro ao remover o veículo.");
+    }
+  };
+
   return (
     <div>
       <h1>Lista de Veículos</h1>
@@ -33,14 +49,12 @@ const VehicleList = ({ vehicles }: Props) => {
             </TableHead>
             <TableBody>
               {vehicles.map((vehicle, index) => (
-                <TableRow key={vehicle.id}>
-                  <TableCell align="center">{index}</TableCell>
-                  <TableCell align="center">{vehicle.placa}</TableCell>
-                  <TableCell align="center">{vehicle.marcaModelo}</TableCell>
-                  <TableCell align="center">{vehicle.anoFabricacao}</TableCell>
-                  <TableCell align="center">{vehicle.kmAtual}</TableCell>
-                  <TableCell align="center">-</TableCell>
-                </TableRow>
+                <VehicleItem
+                  {...vehicle}
+                  index={index + 1}
+                  key={vehicle.id}
+                  onDelete={handleDelete}
+                />
               ))}
             </TableBody>
           </Table>
