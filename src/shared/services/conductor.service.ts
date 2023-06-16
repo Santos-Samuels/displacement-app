@@ -14,11 +14,11 @@ const ConductorService = () => {
     return api.put(`/v1/condutor/${input.id}`, input);
   }
 
-  async function remove(id: string) {
-    return api.delete(`/v1/condutor/${id}`);
+  async function remove(id: number) {
+    return api.delete(`/v1/condutor/${id}`, { data: { id } });
   }
 
-  async function getById(id: string) {
+  async function getById(id: number) {
     return api.get<Conductor>(`/v1/condutor/${id}`);
   }
 

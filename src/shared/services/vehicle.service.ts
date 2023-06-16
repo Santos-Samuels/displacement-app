@@ -10,11 +10,11 @@ const VehicleService = () => {
     return api.put(`/v1/veiculo/${input.id}`, input);
   }
 
-  async function remove(id: string) {
-    return api.delete(`/v1/veiculo/${id}`);
+  async function remove(id: number) {
+    return api.delete(`/v1/veiculo/${id}`, { data: { id } });
   }
 
-  async function getById(id: string) {
+  async function getById(id: number) {
     return api.get<Vehicle>(`/v1/veiculo/${id}`);
   }
 

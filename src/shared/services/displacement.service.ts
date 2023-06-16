@@ -14,11 +14,11 @@ const DisplacementService = () => {
     return api.put(`/v1/deslocamento/encerrardeslocamento/${input.id}`, input);
   }
 
-  async function remove(id: string) {
-    return api.delete(`/v1/deslocamento/${id}`);
+  async function remove(id: number) {
+    return api.delete(`/v1/deslocamento/${id}`, { data: { id } });
   }
 
-  async function getById(id: string) {
+  async function getById(id: number) {
     return api.get<Displacement>(`/v1/deslocamento/${id}`);
   }
 
