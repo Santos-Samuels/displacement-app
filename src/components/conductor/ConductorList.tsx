@@ -1,4 +1,5 @@
 import { Conductor } from "@/shared/interfaces/conductor.interface";
+import { ConductorService } from "@/shared/services";
 import {
   Paper,
   Table,
@@ -8,12 +9,27 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { toast } from "react-toastify";
+import { useSWRConfig } from "swr";
+import ConductorItem from "./ConductorItem";
 
 interface Props {
   conductors?: Conductor[];
 }
 
 const ConductorList = ({ conductors }: Props) => {
+  const { mutate } = useSWRConfig();
+
+  const handleDelete = async (id: number) => {
+    try {
+      await ConductorService().remove(id);
+      toast.success("Condutor removido com sucesso.");
+      mutate("/v1/condutor");
+    } catch (error) {
+      toast.error("Erro ao remover o condutor.");
+    }
+  };
+
   return (
     <div>
       <h1>Lista de Condutores</h1>
@@ -33,22 +49,12 @@ const ConductorList = ({ conductors }: Props) => {
             </TableHead>
             <TableBody>
               {conductors.map((conductor, index) => (
-                <TableRow key={conductor.id}>
-                  <TableCell align="center">{index}</TableCell>
-                  <TableCell align="center">{conductor.nome}</TableCell>
-                  <TableCell align="center">
-                    {conductor.numeroHabilitacao}
-                  </TableCell>
-                  <TableCell align="center">
-                    {conductor.catergoriaHabilitacao}
-                  </TableCell>
-                  <TableCell align="center">
-                    {new Date(
-                      conductor.vencimentoHabilitacao
-                    ).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell align="center">-</TableCell>
-                </TableRow>
+                <ConductorItem
+                  {...conductor}
+                  index={index + 1}
+                  key={conductor.id}
+                  onDelete={handleDelete}
+                />
               ))}
             </TableBody>
           </Table>
