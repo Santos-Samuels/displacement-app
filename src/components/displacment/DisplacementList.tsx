@@ -1,5 +1,5 @@
 import { Displacement } from "@/shared/interfaces/displacement.interface";
-import { formatInterval } from "@/shared/utils/calculateInterval";
+import { DisplacementService } from "@/shared/services";
 import {
   Paper,
   Table,
@@ -9,12 +9,27 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { toast } from "react-toastify";
+import { useSWRConfig } from "swr";
+import DisplacementItem from "./DisplacementItem";
 
 interface Props {
   displacements?: Displacement[];
 }
 
 const DisplacementList = ({ displacements }: Props) => {
+  const { mutate } = useSWRConfig();
+
+  const handleDelete = async (id: number) => {
+    try {
+      await DisplacementService().remove(id);
+      toast.success("Deslocamento removido com sucesso.");
+      mutate("/v1/deslocamento");
+    } catch (error) {
+      toast.error("Erro ao remover o deslocamento.");
+    }
+  };
+
   return (
     <div>
       <h1>Lista de Deslocamentos</h1>
@@ -34,18 +49,12 @@ const DisplacementList = ({ displacements }: Props) => {
             <TableBody>
               {displacements.map((displacement, index) => (
                 <TableRow key={displacement.id}>
-                  <TableCell align="center">{index}</TableCell>
-                  <TableCell align="center">
-                    {displacement.kmFinal - displacement.kmInicial}
-                  </TableCell>
-                  <TableCell align="center">
-                    {formatInterval(
-                      new Date(displacement.inicioDeslocamento),
-                      new Date(displacement.fimDeslocamento)
-                    )}
-                  </TableCell>
-                  <TableCell align="center">{displacement.checkList}</TableCell>
-                  <TableCell align="center">-</TableCell>
+                  <DisplacementItem
+                    {...displacement}
+                    index={index + 1}
+                    key={displacement.id}
+                    onDelete={handleDelete}
+                  />
                 </TableRow>
               ))}
             </TableBody>
