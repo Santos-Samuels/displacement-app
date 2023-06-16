@@ -1,4 +1,6 @@
 import { Container } from "@material-ui/core";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Props {
   children: NonNullable<React.ReactNode>;
@@ -15,7 +17,12 @@ const AppContainer = ({ children, isLoading, hasError }: Props) => {
     return <p>Ocorreu um erro ao carregar os dados</p>;
   }
 
-  return <Container>{children}</Container>;
+  return (
+    <Container>
+      <ToastContainer position="top-right" autoClose={5000} />
+      {children}
+    </Container>
+  );
 };
 
 export default AppContainer;
