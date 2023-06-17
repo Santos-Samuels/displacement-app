@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { Conductor } from "@/shared/interfaces/conductor.interface";
 import {
   CircularProgress,
@@ -6,11 +7,15 @@ import {
   TableRow,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import { useContext } from "react";
+
 import { useState } from "react";
 
 interface Props extends Conductor {
   index: number;
   onDelete: (id: number) => Promise<void>;
+  onEdit: () => void;
 }
 
 const ConductorItem = ({
@@ -21,8 +26,10 @@ const ConductorItem = ({
   vencimentoHabilitacao,
   index,
   onDelete,
+  onEdit,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { currentConductor } = useContext(AppContext);
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -31,7 +38,10 @@ const ConductorItem = ({
   };
 
   return (
-    <TableRow key={id}>
+    <TableRow
+      key={id}
+      selected={currentConductor && currentConductor.id === id ? true : false}
+    >
       <TableCell align="center">{index}</TableCell>
       <TableCell align="center">{nome}</TableCell>
       <TableCell align="center">{numeroHabilitacao}</TableCell>
@@ -50,6 +60,10 @@ const ConductorItem = ({
           ) : (
             <DeleteIcon fontSize="inherit" />
           )}
+        </IconButton>
+
+        <IconButton aria-label="edit" onClick={onEdit} disabled={isLoading}>
+          <EditIcon fontSize="inherit" />
         </IconButton>
       </TableCell>
     </TableRow>
