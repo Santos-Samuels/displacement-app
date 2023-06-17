@@ -32,19 +32,36 @@ const DisplacementItem = ({
     setIsLoading(false);
   };
 
+  const handleFormatInterval = () => {
+    const now = new Date().toISOString();
+
+    if (!fimDeslocamento)
+      return formatInterval(new Date(inicioDeslocamento), new Date(now));
+
+    return formatInterval(
+      new Date(inicioDeslocamento),
+      new Date(fimDeslocamento)
+    );
+  };
+
+  const calculateDistance = () => {
+    if (!fimDeslocamento) return "-";
+
+    return kmFinal - kmInicial;
+  };
+
+  const getStatus = () => {
+    if (!fimDeslocamento) return "Em andamento";
+
+    return "Finalizado";
+  };
+
   return (
     <TableRow key={id}>
       <TableCell align="center">{index}</TableCell>
-      <TableCell align="center">
-        {kmFinal - kmInicial}
-      </TableCell>
-      <TableCell align="center">
-        {formatInterval(
-          new Date(inicioDeslocamento),
-          new Date(fimDeslocamento)
-        )}
-      </TableCell>
-      <TableCell align="center">{checkList}</TableCell>
+      <TableCell align="center">{calculateDistance()}</TableCell>
+      <TableCell align="center">{handleFormatInterval()}</TableCell>
+      <TableCell align="center">{getStatus()}</TableCell>
       <TableCell align="center" size="small">
         <IconButton
           aria-label="delete"

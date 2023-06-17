@@ -19,11 +19,11 @@ export function formatDayWithText(day: number) {
 }
 
 export function formatHourWithText(hour: number) {
-  return `${hour} ${hour === 1 ? "hora" : "horas"}`;
+  return `${hour}h`;
 }
 
 export function formatMinutesWithText(minutes: number) {
-  return `${minutes} ${minutes === 1 ? "minuto" : "minutos"}`;
+  return `${minutes}min`;
 }
 
 export function formatInterval(end: Date, start: Date) {

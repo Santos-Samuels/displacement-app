@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
+import styles from "../styles.module.css";
 import DisplacementItem from "./DisplacementItem";
 
 interface Props {
@@ -32,15 +33,15 @@ const DisplacementList = ({ displacements }: Props) => {
 
   return (
     <div>
-      <h1>Lista de Deslocamentos</h1>
+      <h1 className={styles.title}>Lista de Deslocamentos</h1>
 
       {displacements?.length ? (
-        <TableContainer component={Paper}>
+        <TableContainer className={styles.table} component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>
               <TableRow>
                 <TableCell align="center">Nº</TableCell>
-                <TableCell align="center">Deslocamento</TableCell>
+                <TableCell align="center">Deslocamento (Km)</TableCell>
                 <TableCell align="center">Tempo</TableCell>
                 <TableCell align="center">Status</TableCell>
                 <TableCell align="center">Ações</TableCell>
@@ -48,14 +49,12 @@ const DisplacementList = ({ displacements }: Props) => {
             </TableHead>
             <TableBody>
               {displacements.map((displacement, index) => (
-                <TableRow key={displacement.id}>
-                  <DisplacementItem
-                    {...displacement}
-                    index={index + 1}
-                    key={displacement.id}
-                    onDelete={handleDelete}
-                  />
-                </TableRow>
+                <DisplacementItem
+                  {...displacement}
+                  index={index + 1}
+                  key={displacement.id}
+                  onDelete={handleDelete}
+                />
               ))}
             </TableBody>
           </Table>
