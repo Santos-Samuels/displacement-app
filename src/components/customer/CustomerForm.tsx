@@ -1,4 +1,8 @@
-import { CustomerCreateInput } from "@/shared/interfaces/customer.interface";
+import { AppContext } from "@/context";
+import {
+  CustomerCreateInput,
+  CustomerUpdateInput,
+} from "@/shared/interfaces/customer.interface";
 import { CustomerService } from "@/shared/services";
 import {
   Button,
@@ -9,12 +13,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
@@ -27,10 +31,12 @@ const CustomerForm = () => {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<CustomerCreateInput>({
     defaultValues: { tipoDocumento: "" },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { currentCustomer, setCurrentCustomer } = useContext(AppContext);
   const [open, setOpen] = useState(true);
   const { mutate } = useSWRConfig();
 
@@ -47,10 +53,47 @@ const CustomerForm = () => {
     setIsLoading(false);
   };
 
+  const onUpdate: SubmitHandler<CustomerCreateInput> = async (data) => {
+    setIsLoading(true);
+
+    const { nome, bairro, cidade, logradouro, numero, uf } = data;
+
+    try {
+      await CustomerService().update({
+        id: currentCustomer!.id,
+        nome,
+        bairro,
+        cidade,
+        logradouro,
+        numero,
+        uf,
+      } as CustomerUpdateInput);
+      toast.success("Cliente atualizado com sucesso.");
+      resetForm();
+      mutate("/v1/cliente");
+    } catch (error) {
+      toast.error("Erro ao atualizar o cliente.");
+    }
+    setIsLoading(false);
+  };
+
+  const resetForm = () => {
+    reset();
+    setCurrentCustomer(undefined);
+  };
+
+  useEffect(() => {
+    if (currentCustomer) {
+      Object.entries(currentCustomer).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+    }
+  }, [currentCustomer]);
+
   return (
     <div className={styles.form}>
       <Grid container justifyContent="space-between" alignItems="center">
-        <h1 className={styles.title}>Adicionar Cliente</h1>
+        <h1 className={styles.title}>{currentCustomer ? "Atualizar Cliente" : "Adicionar Cliente"}</h1>
 
         <IconButton
           aria-label="delete"
@@ -66,7 +109,7 @@ const CustomerForm = () => {
       </Grid>
 
       <Collapse in={open}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(currentCustomer ? onUpdate : onSubmit)}>
           <Grid
             container
             spacing={2}
@@ -79,6 +122,9 @@ const CustomerForm = () => {
                 label="Nome *"
                 type="text"
                 size="small"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 fullWidth
                 {...register("nome", { required: "Informe o Nome" })}
               />
@@ -89,55 +135,62 @@ const CustomerForm = () => {
               )}
             </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                color={errors.numeroDocumento ? "secondary" : "primary"}
-                label="Documento *"
-                type="number"
-                size="small"
-                fullWidth
-                {...register("numeroDocumento", {
-                  required: "Informe o Documento",
-                })}
-              />
-              {errors.numeroDocumento && (
-                <span className={styles.errorMessage}>
-                  {errors.numeroDocumento?.message}
-                </span>
-              )}
-            </Grid>
+            {!currentCustomer && (
+              <>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    color={errors.numeroDocumento ? "secondary" : "primary"}
+                    label="Documento *"
+                    type="number"
+                    size="small"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    fullWidth
+                    {...register("numeroDocumento", {
+                      required: "Informe o Documento",
+                    })}
+                  />
+                  {errors.numeroDocumento && (
+                    <span className={styles.errorMessage}>
+                      {errors.numeroDocumento?.message}
+                    </span>
+                  )}
+                </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel id="document-type-label">
-                  Tipo de Documento *
-                </InputLabel>
-                <Select
-                  color={
-                    errors.tipoDocumento && !watch("tipoDocumento")
-                      ? "secondary"
-                      : "primary"
-                  }
-                  labelId="document-type-label"
-                  id="document-type"
-                  value={watch("tipoDocumento")}
-                  fullWidth
-                  {...register("tipoDocumento", {
-                    required: "Informe o Tipo de Documento",
-                  })}
-                >
-                  <MenuItem value="" />
-                  <MenuItem value="RG">RG</MenuItem>
-                  <MenuItem value="CPF">CPF</MenuItem>
-                  <MenuItem value="CNPJ">CNPJ</MenuItem>
-                </Select>
-              </FormControl>
-              {errors.tipoDocumento && !watch("tipoDocumento") && (
-                <span className={styles.errorMessage}>
-                  {errors.tipoDocumento?.message}
-                </span>
-              )}
-            </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id="document-type-label">
+                      Tipo de Documento *
+                    </InputLabel>
+                    <Select
+                      color={
+                        errors.tipoDocumento && !watch("tipoDocumento")
+                          ? "secondary"
+                          : "primary"
+                      }
+                      labelId="document-type-label"
+                      id="document-type"
+                      value={watch("tipoDocumento")}
+                      fullWidth
+                      {...register("tipoDocumento", {
+                        required: "Informe o Tipo de Documento",
+                      })}
+                    >
+                      <MenuItem value="" />
+                      <MenuItem value="RG">RG</MenuItem>
+                      <MenuItem value="CPF">CPF</MenuItem>
+                      <MenuItem value="CNPJ">CNPJ</MenuItem>
+                    </Select>
+                  </FormControl>
+                  {errors.tipoDocumento && !watch("tipoDocumento") && (
+                    <span className={styles.errorMessage}>
+                      {errors.tipoDocumento?.message}
+                    </span>
+                  )}
+                </Grid>
+              </>
+            )}
 
             <div className={styles.formSection}>
               <h2 className={styles.subTitle}>Endereço</h2>
@@ -148,6 +201,9 @@ const CustomerForm = () => {
                     color={errors.logradouro ? "secondary" : "primary"}
                     label="Rua *"
                     type="text"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     fullWidth
                     {...register("logradouro", {
                       required: "Informe a Rua",
@@ -165,6 +221,9 @@ const CustomerForm = () => {
                     color={errors.numero ? "secondary" : "primary"}
                     label="Nº *"
                     type="text"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     fullWidth
                     {...register("numero", {
                       required: "Informe o Número",
@@ -182,6 +241,9 @@ const CustomerForm = () => {
                     color={errors.bairro ? "secondary" : "primary"}
                     label="Bairro *"
                     type="text"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     fullWidth
                     {...register("bairro", {
                       required: "Informe o Bairro",
@@ -199,6 +261,9 @@ const CustomerForm = () => {
                     color={errors.cidade ? "secondary" : "primary"}
                     label="Cidade *"
                     type="text"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     fullWidth
                     {...register("cidade", {
                       required: "Informe a Cidade",
@@ -216,6 +281,9 @@ const CustomerForm = () => {
                     color={errors.uf ? "secondary" : "primary"}
                     label="UF *"
                     type="text"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     fullWidth
                     {...register("uf", {
                       required: "Informe a UF",
@@ -232,7 +300,21 @@ const CustomerForm = () => {
           </Grid>
 
           <Grid container spacing={2} justifyContent="flex-end">
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={3}>
+              <Button
+                className={styles.button}
+                variant="contained"
+                type="button"
+                size="large"
+                onClick={resetForm}
+                fullWidth
+                disabled={isLoading}
+              >
+                Limpar
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} md={3}>
               <Button
                 className={styles.button}
                 type="submit"
@@ -243,7 +325,7 @@ const CustomerForm = () => {
                 disabled={isLoading}
                 startIcon={<AddIcon />}
               >
-                Adicionar
+                {currentCustomer ? "Atualizar" : "Adicionar"}
               </Button>
             </Grid>
           </Grid>

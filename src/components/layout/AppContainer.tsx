@@ -1,6 +1,7 @@
+import { AppProvider } from "@context/index";
 import { Container } from "@material-ui/core";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   children: NonNullable<React.ReactNode>;
@@ -19,8 +20,10 @@ const AppContainer = ({ children, isLoading, hasError }: Props) => {
 
   return (
     <Container>
-      <ToastContainer position="top-right" autoClose={5000} />
-      {children}
+      <AppProvider>
+        <ToastContainer position="top-right" autoClose={5000} />
+        {children}
+      </AppProvider>
     </Container>
   );
 };

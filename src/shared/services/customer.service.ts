@@ -1,6 +1,7 @@
 import {
   Customer,
   CustomerCreateInput,
+  CustomerUpdateInput
 } from "../interfaces/customer.interface";
 import api from "./api";
 
@@ -9,7 +10,7 @@ const CustomerService = () => {
     return api.post("/v1/cliente", input);
   }
 
-  async function update(input: Customer) {
+  async function update(input: CustomerUpdateInput) {
     return api.put(`/v1/cliente/${input.id}`, input);
   }
 

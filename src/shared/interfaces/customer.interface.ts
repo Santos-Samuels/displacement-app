@@ -11,3 +11,13 @@ export interface Customer {
 }
 
 export interface CustomerCreateInput extends Omit<Customer, "id"> {}
+
+export interface CustomerUpdateInput {
+  id: number;
+  nome: string;
+  logradouro: string;
+  numero: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+}

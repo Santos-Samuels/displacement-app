@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { Customer } from "@/shared/interfaces/customer.interface";
 import { CustomerService } from "@/shared/services";
 import {
@@ -9,6 +10,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
 import styles from "../styles.module.css";
@@ -20,6 +22,7 @@ interface Props {
 
 const CustomerList = ({ customers }: Props) => {
   const { mutate } = useSWRConfig();
+  const { setCurrentCustomer } = useContext(AppContext);
 
   const handleDelete = async (id: number) => {
     try {
@@ -53,6 +56,7 @@ const CustomerList = ({ customers }: Props) => {
                 <CustomerItem
                   index={index + 1}
                   onDelete={handleDelete}
+                  onEdit={() => setCurrentCustomer(customer)}
                   {...customer}
                   key={customer.id}
                 />
