@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { VehicleCreateInput } from "@/shared/interfaces/vehicle.interface";
 import { VehicleService } from "@/shared/services";
 import {
@@ -5,12 +6,12 @@ import {
   Collapse,
   Grid,
   IconButton,
-  TextField
+  TextField,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
@@ -22,9 +23,10 @@ const VehicleForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    setValue,
   } = useForm<VehicleCreateInput>();
   const [isLoading, setIsLoading] = useState(false);
+  const { currentVehicle, setCurrentVehicle } = useContext(AppContext);
   const [open, setOpen] = useState(true);
   const { mutate } = useSWRConfig();
 
@@ -41,10 +43,42 @@ const VehicleForm = () => {
     setIsLoading(false);
   };
 
+  const onUpdate: SubmitHandler<VehicleCreateInput> = async (data) => {
+    setIsLoading(true);
+
+    try {
+      await VehicleService().update({
+        id: currentVehicle!.id,
+        ...data,
+      });
+      toast.success("Veículo atualizado com sucesso.");
+      resetForm();
+      mutate("/v1/veiculo");
+    } catch (error) {
+      toast.error("Erro ao atualizar o veículo.");
+    }
+    setIsLoading(false);
+  };
+
+  const resetForm = () => {
+    reset();
+    setCurrentVehicle(undefined);
+  };
+
+  useEffect(() => {
+    if (currentVehicle) {
+      Object.entries(currentVehicle).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+    }
+  }, [currentVehicle]);
+
   return (
     <div className={styles.form}>
       <Grid container justifyContent="space-between" alignItems="center">
-        <h1 className={styles.title}>Adicionar Veículo</h1>
+        <h1 className={styles.title}>
+          {currentVehicle ? "Atualizar Veículo" : "Adicionar Veículo"}
+        </h1>
 
         <IconButton
           aria-label="delete"
@@ -60,35 +94,43 @@ const VehicleForm = () => {
       </Grid>
 
       <Collapse in={open}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(currentVehicle ? onUpdate : onSubmit)}>
           <Grid
             container
             spacing={2}
             alignItems="flex-start"
-            justifyContent="center"
+            justifyContent="flex-start"
           >
-            <Grid item xs={12} sm={6} md={3}>
-              <TextField
-                color={errors.placa ? "secondary" : "primary"}
-                label="Placa *"
-                type="text"
-                size="small"
-                fullWidth
-                {...register("placa", { required: "Informe a Placa" })}
-              />
-              {errors.placa && (
-                <span className={styles.errorMessage}>
-                  {errors.placa?.message}
-                </span>
-              )}
-            </Grid>
+            {!currentVehicle && (
+              <Grid item xs={12} sm={6} md={3}>
+                <TextField
+                  color={errors.placa ? "secondary" : "primary"}
+                  label="Placa *"
+                  type="text"
+                  size="small"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  fullWidth
+                  {...register("placa", { required: "Informe a Placa" })}
+                />
+                {errors.placa && (
+                  <span className={styles.errorMessage}>
+                    {errors.placa?.message}
+                  </span>
+                )}
+              </Grid>
+            )}
 
-            <Grid item xs={12} sm={6} md={3}>
+            <Grid item xs={12} sm={6} md={currentVehicle ? 6 : 3}>
               <TextField
                 color={errors.marcaModelo ? "secondary" : "primary"}
                 label="Marca/Modelo *"
                 type="text"
                 size="small"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 fullWidth
                 {...register("marcaModelo", {
                   required: "Informe a Marca/Modelo",
@@ -107,6 +149,9 @@ const VehicleForm = () => {
                 label="Ano de Fabricação *"
                 type="number"
                 size="small"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 fullWidth
                 {...register("anoFabricacao", {
                   required: "Informe a Ano de Fabricação",
@@ -125,6 +170,9 @@ const VehicleForm = () => {
                 label="Km Atual *"
                 type="number"
                 size="small"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 fullWidth
                 {...register("kmAtual", {
                   required: "Informe a Km Atual",
@@ -139,7 +187,22 @@ const VehicleForm = () => {
           </Grid>
 
           <Grid container spacing={2} justifyContent="flex-end">
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                className={styles.button}
+                type="button"
+                variant="contained"
+                size="large"
+                onClick={resetForm}
+                fullWidth
+                disabled={isLoading}
+                startIcon={<AddIcon />}
+              >
+                Limpar
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
               <Button
                 className={styles.button}
                 type="submit"
@@ -150,7 +213,7 @@ const VehicleForm = () => {
                 disabled={isLoading}
                 startIcon={<AddIcon />}
               >
-                Adicionar
+                {currentVehicle ? "Atualizar" : "Adicionar"}
               </Button>
             </Grid>
           </Grid>

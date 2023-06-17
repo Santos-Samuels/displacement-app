@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { Vehicle } from "@/shared/interfaces/vehicle.interface";
 import {
   CircularProgress,
@@ -6,11 +7,13 @@ import {
   TableRow,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useState } from "react";
+import EditIcon from "@material-ui/icons/Edit";
+import { useContext, useState } from "react";
 
 interface Props extends Vehicle {
   index: number;
   onDelete: (id: number) => Promise<void>;
+  onEdit: () => void;
 }
 
 const VehicleItem = ({
@@ -21,8 +24,10 @@ const VehicleItem = ({
   kmAtual,
   index,
   onDelete,
+  onEdit,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { currentVehicle } = useContext(AppContext);
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -31,7 +36,10 @@ const VehicleItem = ({
   };
 
   return (
-    <TableRow key={id}>
+    <TableRow
+      key={id}
+      selected={currentVehicle && currentVehicle.id === id ? true : false}
+    >
       <TableCell align="center">{index}</TableCell>
       <TableCell align="center">{placa}</TableCell>
       <TableCell align="center">{marcaModelo}</TableCell>
@@ -47,6 +55,14 @@ const VehicleItem = ({
             <CircularProgress size={18} />
           ) : (
             <DeleteIcon fontSize="inherit" />
+          )}
+        </IconButton>
+
+        <IconButton aria-label="edit" onClick={onEdit} disabled={isLoading}>
+          {isLoading ? (
+            <CircularProgress size={18} />
+          ) : (
+            <EditIcon fontSize="inherit" />
           )}
         </IconButton>
       </TableCell>

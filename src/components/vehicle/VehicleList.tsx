@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { Vehicle } from "@/shared/interfaces/vehicle.interface";
 import { VehicleService } from "@/shared/services";
 import {
@@ -9,6 +10,7 @@ import {
   TableHead,
   TableRow
 } from "@material-ui/core";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
 import styles from "../styles.module.css";
@@ -20,6 +22,7 @@ interface Props {
 
 const VehicleList = ({ vehicles }: Props) => {
   const { mutate } = useSWRConfig();
+  const { setCurrentVehicle } = useContext(AppContext);
 
   const handleDelete = async (id: number) => {
     try {
@@ -55,6 +58,7 @@ const VehicleList = ({ vehicles }: Props) => {
                   index={index + 1}
                   key={vehicle.id}
                   onDelete={handleDelete}
+                  onEdit={() => setCurrentVehicle(vehicle)}
                 />
               ))}
             </TableBody>
