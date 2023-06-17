@@ -59,8 +59,8 @@ const CustomerItem = ({
         </IconButton>
 
         <IconButton
-          aria-label="delete"
-          onClick={() => onEdit()}
+          aria-label="edit"
+          onClick={onEdit}
           disabled={isLoading}
         >
           {isLoading ? (

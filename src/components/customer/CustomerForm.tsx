@@ -1,7 +1,6 @@
 import { AppContext } from "@/context";
 import {
-  CustomerCreateInput,
-  CustomerUpdateInput,
+  CustomerCreateInput
 } from "@/shared/interfaces/customer.interface";
 import { CustomerService } from "@/shared/services";
 import {
@@ -67,7 +66,7 @@ const CustomerForm = () => {
         logradouro,
         numero,
         uf,
-      } as CustomerUpdateInput);
+      });
       toast.success("Cliente atualizado com sucesso.");
       resetForm();
       mutate("/v1/cliente");
@@ -93,7 +92,9 @@ const CustomerForm = () => {
   return (
     <div className={styles.form}>
       <Grid container justifyContent="space-between" alignItems="center">
-        <h1 className={styles.title}>{currentCustomer ? "Atualizar Cliente" : "Adicionar Cliente"}</h1>
+        <h1 className={styles.title}>
+          {currentCustomer ? "Atualizar Cliente" : "Adicionar Cliente"}
+        </h1>
 
         <IconButton
           aria-label="delete"
@@ -300,7 +301,7 @@ const CustomerForm = () => {
           </Grid>
 
           <Grid container spacing={2} justifyContent="flex-end">
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={2}>
               <Button
                 className={styles.button}
                 variant="contained"
@@ -314,7 +315,7 @@ const CustomerForm = () => {
               </Button>
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={2}>
               <Button
                 className={styles.button}
                 type="submit"

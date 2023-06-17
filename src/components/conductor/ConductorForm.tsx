@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { ConductorCreateInput } from "@/shared/interfaces/conductor.interface";
 import { ConductorService } from "@/shared/services";
 import {
@@ -14,7 +15,7 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
@@ -27,10 +28,15 @@ const ConductorForm = () => {
     formState: { errors },
     reset,
     watch,
+    setValue,
+    setError,
+    clearErrors,
+    setFocus,
   } = useForm<ConductorCreateInput>({
     defaultValues: { categoriaHabilitacao: "" },
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { currentConductor, setCurrentConductor } = useContext(AppContext);
   const [open, setOpen] = useState(true);
   const { mutate } = useSWRConfig();
 
@@ -51,6 +57,74 @@ const ConductorForm = () => {
     setIsLoading(false);
   };
 
+  const onUpdate: SubmitHandler<ConductorCreateInput> = async (data) => {
+    if (!validateEditDate(data.vencimentoHabilitacao)) {
+      setFocus("vencimentoHabilitacao");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const vencimentoHabilitacao = new Date(
+        data.vencimentoHabilitacao
+      ).toISOString();
+
+      await ConductorService().update({
+        id: currentConductor!.id,
+        categoriaHabilitacao: data.categoriaHabilitacao,
+        vencimentoHabilitacao,
+      });
+
+      toast.success("Condutor atualizado com sucesso.");
+      resetForm();
+      mutate("/v1/condutor");
+    } catch (error) {
+      toast.error("Erro ao atualizar o condutor.");
+    }
+    setIsLoading(false);
+  };
+
+  const resetForm = () => {
+    reset();
+    setCurrentConductor(undefined);
+  };
+
+  const validateEditDate = (value: string) => {
+    if (!currentConductor) return;
+
+    const oldDate = new Date(currentConductor?.vencimentoHabilitacao).getTime();
+    const newDate = new Date(value).getTime();
+
+    if (newDate > oldDate) {
+      clearErrors("vencimentoHabilitacao");
+      return true;
+    }
+    
+    setError("vencimentoHabilitacao", {
+      type: "required",
+      message: "A data de vencimento deve ser maior que a atual.",
+    });
+
+    return false;
+  };
+
+  useEffect(() => {
+    if (currentConductor) {
+      Object.entries(currentConductor).forEach(([key, value]) => {
+        if (key === "catergoriaHabilitacao") {
+          setValue("categoriaHabilitacao", value);
+          return;
+        }
+
+        if (key === "vencimentoHabilitacao") {
+          setValue(key, new Date(value).toISOString().split("T")[0]);
+          return;
+        }
+        setValue(key, value);
+      });
+    }
+  }, [currentConductor]);
+
   return (
     <div className={styles.form}>
       <Grid container justifyContent="space-between" alignItems="center">
@@ -69,41 +143,53 @@ const ConductorForm = () => {
       </Grid>
 
       <Collapse in={open}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(currentConductor ? onUpdate : onSubmit)}>
           <Grid container spacing={2} alignItems="flex-start">
-            <Grid item xs={12}>
-              <TextField
-                color={errors.nome ? "secondary" : "primary"}
-                label="Nome *"
-                type="text"
-                size="small"
-                fullWidth
-                {...register("nome", { required: "Informe o Nome" })}
-              />
-              {errors.nome && (
-                <span className={styles.errorMessage}>
-                  {errors.nome?.message}
-                </span>
-              )}
-            </Grid>
+            {!currentConductor && (
+              <>
+                <Grid item xs={12} md={9}>
+                  <TextField
+                    color={errors.nome ? "secondary" : "primary"}
+                    label="Nome *"
+                    type="text"
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    {...register("nome", { required: "Informe o Nome" })}
+                  />
+                  {errors.nome && (
+                    <span className={styles.errorMessage}>
+                      {errors.nome?.message}
+                    </span>
+                  )}
+                </Grid>
 
-            <Grid item xs={12} md={3}>
-              <TextField
-                color={errors.numeroHabilitacao ? "secondary" : "primary"}
-                label="CNH *"
-                type="number"
-                size="small"
-                fullWidth
-                {...register("numeroHabilitacao", {
-                  required: "Informe a CNH",
-                })}
-              />
-              {errors.numeroHabilitacao && (
-                <span className={styles.errorMessage}>
-                  {errors.numeroHabilitacao?.message}
-                </span>
-              )}
-            </Grid>
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    color={errors.numeroHabilitacao ? "secondary" : "primary"}
+                    label="CNH *"
+                    type="number"
+                    size="small"
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    {...register("numeroHabilitacao", {
+                      required: "Informe a CNH",
+                      validate: (value) =>
+                        validateEditDate(new Date(value).getTime()),
+                    })}
+                  />
+                  {errors.numeroHabilitacao && (
+                    <span className={styles.errorMessage}>
+                      {errors.numeroHabilitacao?.message}
+                    </span>
+                  )}
+                </Grid>
+              </>
+            )}
 
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth>
@@ -151,6 +237,9 @@ const ConductorForm = () => {
                 }}
                 {...register("vencimentoHabilitacao", {
                   required: "Informe o Vencimento",
+                  onChange: (e) => {
+                    validateEditDate(e.target.value);
+                  },
                 })}
               />
               {errors.vencimentoHabilitacao && (
@@ -160,8 +249,23 @@ const ConductorForm = () => {
               )}
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} sm={6} md={3}>
               <Button
+                className={styles.button}
+                variant="contained"
+                type="button"
+                size="large"
+                onClick={resetForm}
+                fullWidth
+                disabled={isLoading}
+              >
+                Limpar
+              </Button>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                className={styles.button}
                 type="submit"
                 variant="contained"
                 color="primary"
@@ -170,9 +274,11 @@ const ConductorForm = () => {
                 disabled={isLoading}
                 startIcon={<AddIcon />}
               >
-                Adicionar
+                {currentConductor ? "Atualizar" : "Adicionar"}
               </Button>
             </Grid>
+            {/* <Grid container spacing={2} justifyContent="flex-end">
+          </Grid> */}
           </Grid>
         </form>
       </Collapse>
