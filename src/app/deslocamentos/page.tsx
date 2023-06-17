@@ -1,5 +1,5 @@
 "use client";
-import { AppContainer, DisplacementList } from "@/components";
+import { AppContainer, DisplacementForm, DisplacementList } from "@/components";
 import { useEntities } from "@/hooks/useEntities";
 import { DisplacementService } from "@/shared/services";
 import useSWR from "swr";
@@ -13,6 +13,7 @@ const DisplacementPage = () => {
 
   return (
     <AppContainer isLoading={isLoading || isEntitiesLoading} hasError={error}>
+      <DisplacementForm />
       <DisplacementList displacements={data} />
     </AppContainer>
   );

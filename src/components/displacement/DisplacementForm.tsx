@@ -1,3 +1,4 @@
+import { useEntities } from "@/hooks/useEntities";
 import { DisplacementCreateInput } from "@/shared/interfaces/displacement.interface";
 import { DisplacementService } from "@/shared/services";
 import {
@@ -9,7 +10,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField
+  TextField,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
@@ -28,21 +29,30 @@ const DisplacementForm = () => {
     reset,
     watch,
   } = useForm<DisplacementCreateInput>({
-    defaultValues: { tipoDocumento: "" },
+    defaultValues: { idCondutor: 0, idVeiculo: 0, idCliente: 0 },
   });
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(true);
   const { mutate } = useSWRConfig();
+  const { entities } = useEntities([]);
+  const { conductors, customers, vehicles } = entities;
 
   const onSubmit: SubmitHandler<DisplacementCreateInput> = async (data) => {
     setIsLoading(true);
     try {
-      await DisplacementService().create(data);
-      toast.success("Cliente adicionado com sucesso.");
+      const observacao = data.observacao || "";
+      
+      await DisplacementService().create({
+        ...data,
+        observacao,
+        checkList: "",
+        motivo: "",
+      });
+      toast.success("Deslocamento adicionado com sucesso.");
       reset();
-      mutate("/v1/cliente");
+      mutate("/v1/deslocamento");
     } catch (error) {
-      toast.error("Erro ao adicionar o cliente.");
+      toast.error("Erro ao adicionar o deslocamento.");
     }
     setIsLoading(false);
   };
@@ -50,7 +60,7 @@ const DisplacementForm = () => {
   return (
     <div className={styles.form}>
       <Grid container justifyContent="space-between" alignItems="center">
-        <h1 className={styles.title}>Adicionar Cliente</h1>
+        <h1 className={styles.title}>Adicionar Deslocamento</h1>
 
         <IconButton
           aria-label="delete"
@@ -73,162 +83,156 @@ const DisplacementForm = () => {
             alignItems="flex-start"
             justifyContent="center"
           >
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={4} md={2}>
               <TextField
-                color={errors.nome ? "secondary" : "primary"}
-                label="Nome *"
-                type="text"
-                size="small"
-                fullWidth
-                {...register("nome", { required: "Informe o Nome" })}
-              />
-              {errors.nome && (
-                <span className={styles.errorMessage}>
-                  {errors.nome?.message}
-                </span>
-              )}
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                color={errors.numeroDocumento ? "secondary" : "primary"}
-                label="Documento *"
+                color={errors.kmInicial ? "secondary" : "primary"}
+                label="Km Inicial *"
                 type="number"
                 size="small"
                 fullWidth
-                {...register("numeroDocumento", {
-                  required: "Informe o Documento",
-                })}
+                {...register("kmInicial", { required: "Informe o Km Inicial" })}
               />
-              {errors.numeroDocumento && (
+              {errors.kmInicial && (
                 <span className={styles.errorMessage}>
-                  {errors.numeroDocumento?.message}
+                  {errors.kmInicial?.message}
                 </span>
               )}
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={8} md={4}>
+              <TextField
+                color={errors.inicioDeslocamento ? "secondary" : "primary"}
+                label="Horário de Início *"
+                type="datetime-local"
+                fullWidth
+                defaultValue={new Date().toLocaleString()}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                {...register("inicioDeslocamento", {
+                  required: "Informe o Início Horário de Início",
+                })}
+              />
+              {errors.inicioDeslocamento && (
+                <span className={styles.errorMessage}>
+                  {errors.inicioDeslocamento?.message}
+                </span>
+              )}
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                color={errors.observacao ? "secondary" : "primary"}
+                label="Observação"
+                type="text"
+                size="small"
+                fullWidth
+                {...register("observacao")}
+              />
+              {errors.observacao && (
+                <span className={styles.errorMessage}>
+                  {errors.observacao?.message}
+                </span>
+              )}
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={4}>
               <FormControl fullWidth>
-                <InputLabel id="document-type-label">
-                  Tipo de Documento *
-                </InputLabel>
+                <InputLabel id="document-type-label">Condutor *</InputLabel>
                 <Select
                   color={
-                    errors.tipoDocumento && !watch("tipoDocumento")
+                    errors.idCondutor && !watch("idCondutor")
                       ? "secondary"
                       : "primary"
                   }
                   labelId="document-type-label"
                   id="document-type"
-                  value={watch("tipoDocumento")}
+                  value={watch("idCondutor")}
                   fullWidth
-                  {...register("tipoDocumento", {
-                    required: "Informe o Tipo de Documento",
+                  {...register("idCondutor", {
+                    required: "Informe o Condutor",
                   })}
                 >
                   <MenuItem value="" />
-                  <MenuItem value="RG">RG</MenuItem>
-                  <MenuItem value="CPF">CPF</MenuItem>
-                  <MenuItem value="CNPJ">CNPJ</MenuItem>
+                  {conductors.map((conductor) => (
+                    <MenuItem key={conductor.id} value={conductor.id}>
+                      {conductor.nome}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
-              {errors.tipoDocumento && !watch("tipoDocumento") && (
+              {errors.idCondutor && !watch("idCondutor") && (
                 <span className={styles.errorMessage}>
-                  {errors.tipoDocumento?.message}
+                  {errors.idCondutor?.message}
                 </span>
               )}
             </Grid>
 
-            <div className={styles.formSection}>
-              <h2 className={styles.subTitle}>Endereço</h2>
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl fullWidth>
+                <InputLabel id="document-type-label">Veículo *</InputLabel>
+                <Select
+                  color={
+                    errors.idVeiculo && !watch("idVeiculo")
+                      ? "secondary"
+                      : "primary"
+                  }
+                  labelId="document-type-label"
+                  id="document-type"
+                  value={watch("idVeiculo")}
+                  fullWidth
+                  {...register("idVeiculo", {
+                    required: "Informe o Veículo",
+                  })}
+                >
+                  <MenuItem value="" />
+                  {vehicles.map((vehicle) => (
+                    <MenuItem key={vehicle.id} value={vehicle.id}>
+                      {vehicle.placa}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {errors.idVeiculo && !watch("idVeiculo") && (
+                <span className={styles.errorMessage}>
+                  {errors.idVeiculo?.message}
+                </span>
+              )}
+            </Grid>
 
-              <Grid container spacing={2} alignItems="flex-start">
-                <Grid item xs={12} sm={10} md={6}>
-                  <TextField
-                    color={errors.logradouro ? "secondary" : "primary"}
-                    label="Rua *"
-                    type="text"
-                    fullWidth
-                    {...register("logradouro", {
-                      required: "Informe a Rua",
-                    })}
-                  />
-                  {errors.logradouro && (
-                    <span className={styles.errorMessage}>
-                      {errors.logradouro?.message}
-                    </span>
-                  )}
-                </Grid>
-
-                <Grid item xs={12} sm={2} md={2}>
-                  <TextField
-                    color={errors.numero ? "secondary" : "primary"}
-                    label="Nº *"
-                    type="text"
-                    fullWidth
-                    {...register("numero", {
-                      required: "Informe o Número",
-                    })}
-                  />
-                  {errors.numero && (
-                    <span className={styles.errorMessage}>
-                      {errors.numero?.message}
-                    </span>
-                  )}
-                </Grid>
-
-                <Grid item xs={12} sm={5} md={4}>
-                  <TextField
-                    color={errors.bairro ? "secondary" : "primary"}
-                    label="Bairro *"
-                    type="text"
-                    fullWidth
-                    {...register("bairro", {
-                      required: "Informe o Bairro",
-                    })}
-                  />
-                  {errors.bairro && (
-                    <span className={styles.errorMessage}>
-                      {errors.bairro?.message}
-                    </span>
-                  )}
-                </Grid>
-
-                <Grid item xs={12} sm={5} md={6}>
-                  <TextField
-                    color={errors.cidade ? "secondary" : "primary"}
-                    label="Cidade *"
-                    type="text"
-                    fullWidth
-                    {...register("cidade", {
-                      required: "Informe a Cidade",
-                    })}
-                  />
-                  {errors.cidade && (
-                    <span className={styles.errorMessage}>
-                      {errors.cidade?.message}
-                    </span>
-                  )}
-                </Grid>
-
-                <Grid item xs={12} sm={2} md={2}>
-                  <TextField
-                    color={errors.uf ? "secondary" : "primary"}
-                    label="UF *"
-                    type="text"
-                    fullWidth
-                    {...register("uf", {
-                      required: "Informe a UF",
-                    })}
-                  />
-                  {errors.uf && (
-                    <span className={styles.errorMessage}>
-                      {errors.uf?.message}
-                    </span>
-                  )}
-                </Grid>
-              </Grid>
-            </div>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth>
+                <InputLabel id="document-type-label">Cliente *</InputLabel>
+                <Select
+                  color={
+                    errors.idCliente && !watch("idCliente")
+                      ? "secondary"
+                      : "primary"
+                  }
+                  labelId="document-type-label"
+                  id="document-type"
+                  value={watch("idCliente")}
+                  fullWidth
+                  {...register("idCliente", {
+                    required: "Informe o Cliente",
+                  })}
+                >
+                  <MenuItem value="" />
+                  {customers.map((customer) => (
+                    <MenuItem key={customer.id} value={customer.id}>
+                      {`${customer.nome.split(" ")[0]} - ${
+                        customer.numeroDocumento
+                      } (${customer.tipoDocumento})`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {errors.idCliente && !watch("idCliente") && (
+                <span className={styles.errorMessage}>
+                  {errors.idCliente?.message}
+                </span>
+              )}
+            </Grid>
           </Grid>
 
           <Grid container spacing={2} justifyContent="flex-end">

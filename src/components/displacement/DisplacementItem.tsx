@@ -29,7 +29,6 @@ const DisplacementItem = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { entities } = useEntities([]);
-  console.log("🚀 ~ file: DisplacementItem.tsx:30 ~ entities:", entities)
 
   const handleDelete = async () => {
     setIsLoading(true);
