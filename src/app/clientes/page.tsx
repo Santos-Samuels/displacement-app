@@ -1,5 +1,5 @@
 "use client";
-import { AppContainer, CustomerList } from "@/components";
+import { AppContainer, CustomerForm, CustomerList } from "@/components";
 import { CustomerService } from "@/shared/services";
 import useSWR from "swr";
 
@@ -8,6 +8,7 @@ const CustomerPage = () => {
 
   return (
     <AppContainer isLoading={isLoading} hasError={error}>
+      <CustomerForm />
       <CustomerList customers={data} />
     </AppContainer>
   );

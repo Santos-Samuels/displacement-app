@@ -58,7 +58,7 @@ const ConductorForm = () => {
         <IconButton
           aria-label="delete"
           onClick={() => setOpen(!open)}
-          size="medium"
+          size="small"
         >
           {open ? (
             <KeyboardArrowUpIcon fontSize="large" />

@@ -18,6 +18,9 @@ const CustomerItem = ({
   nome,
   index,
   numeroDocumento,
+  tipoDocumento,
+  cidade,
+  uf,
   onDelete,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +36,8 @@ const CustomerItem = ({
       <TableCell align="center">{index}</TableCell>
       <TableCell align="center">{nome}</TableCell>
       <TableCell align="center">{numeroDocumento}</TableCell>
+      <TableCell align="center">{tipoDocumento}</TableCell>
+      <TableCell align="center">{cidade} - {uf}</TableCell>
       <TableCell align="center" size="small">
         <IconButton
           aria-label="delete"

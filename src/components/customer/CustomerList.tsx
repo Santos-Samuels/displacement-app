@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
+import styles from "../styles.module.css";
 import CustomerItem from "./CustomerItem";
 
 interface Props {
@@ -32,16 +33,18 @@ const CustomerList = ({ customers }: Props) => {
 
   return (
     <div>
-      <h1>Lista de Clientes</h1>
+      <h1 className={styles.title}>Lista de Clientes</h1>
 
       {customers?.length ? (
-        <TableContainer component={Paper}>
+        <TableContainer className={styles.table} component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>
               <TableRow>
                 <TableCell align="center">Nº</TableCell>
                 <TableCell align="center">Nome</TableCell>
                 <TableCell align="center">Documento</TableCell>
+                <TableCell align="center">Tipo</TableCell>
+                <TableCell align="center">Cidade</TableCell>
                 <TableCell align="center">Ações</TableCell>
               </TableRow>
             </TableHead>
