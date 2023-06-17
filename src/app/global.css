@@ -3,3 +3,8 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+html {
+  background-color: #F2F2F6;
+  color: #272727;
+}
