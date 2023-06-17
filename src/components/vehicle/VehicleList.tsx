@@ -7,10 +7,11 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow
 } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
+import styles from "../styles.module.css";
 import VehicleItem from "./VehicleItem";
 
 interface Props {
@@ -32,10 +33,10 @@ const VehicleList = ({ vehicles }: Props) => {
 
   return (
     <div>
-      <h1>Lista de Veículos</h1>
+      <h1 className={styles.title}>Lista de Veículos</h1>
 
       {vehicles?.length ? (
-        <TableContainer component={Paper}>
+        <TableContainer className={styles.table} component={Paper}>
           <Table aria-label="lista de clientes">
             <TableHead>
               <TableRow>

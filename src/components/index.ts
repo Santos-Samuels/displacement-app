@@ -4,6 +4,7 @@ import CustomerForm from "./customer/CustomerForm";
 import CustomerList from "./customer/CustomerList";
 import DisplacementList from "./displacment/DisplacementList";
 import AppContainer from "./layout/AppContainer";
+import VehicleForm from "./vehicle/VehicleForm";
 import VehicleList from "./vehicle/VehicleList";
 
 export {
@@ -14,4 +15,5 @@ export {
   AppContainer,
   ConductorForm,
   CustomerForm,
+  VehicleForm
 };

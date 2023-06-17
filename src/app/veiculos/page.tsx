@@ -1,5 +1,5 @@
 "use client";
-import { AppContainer, VehicleList } from "@/components";
+import { AppContainer, VehicleForm, VehicleList } from "@/components";
 import { VehicleService } from "@/shared/services";
 import useSWR from "swr";
 
@@ -8,6 +8,7 @@ const VehiclePage = () => {
 
   return (
     <AppContainer isLoading={isLoading} hasError={error}>
+      <VehicleForm />
       <VehicleList vehicles={data} />
     </AppContainer>
   );
