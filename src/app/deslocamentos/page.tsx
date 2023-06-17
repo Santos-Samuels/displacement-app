@@ -5,14 +5,14 @@ import { DisplacementService } from "@/shared/services";
 import useSWR from "swr";
 
 const DisplacementPage = () => {
-  useEntities(["vehicles", "customers", "conductors"]);
+  const {isLoading: isEntitiesLoading} = useEntities(["vehicles", "customers", "conductors"]);
   const { data, error, isLoading } = useSWR(
     "/v1/deslocamento",
     fetchDisplacements
   );
 
   return (
-    <AppContainer isLoading={isLoading} hasError={error}>
+    <AppContainer isLoading={isLoading || isEntitiesLoading} hasError={error}>
       <DisplacementList displacements={data} />
     </AppContainer>
   );
