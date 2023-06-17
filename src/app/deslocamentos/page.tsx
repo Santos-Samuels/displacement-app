@@ -1,9 +1,11 @@
 "use client";
 import { AppContainer, DisplacementList } from "@/components";
+import { useEntities } from "@/hooks/useEntities";
 import { DisplacementService } from "@/shared/services";
 import useSWR from "swr";
 
 const DisplacementPage = () => {
+  useEntities(["vehicles", "customers", "conductors"]);
   const { data, error, isLoading } = useSWR(
     "/v1/deslocamento",
     fetchDisplacements

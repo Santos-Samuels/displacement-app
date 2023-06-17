@@ -1,3 +1,4 @@
+import { useEntities } from "@/hooks/useEntities";
 import { Displacement } from "@/shared/interfaces/displacement.interface";
 import { formatInterval } from "@/shared/utils/calculateInterval";
 import {
@@ -16,15 +17,19 @@ interface Props extends Displacement {
 
 const DisplacementItem = ({
   id,
-  checkList,
   fimDeslocamento,
   inicioDeslocamento,
   kmFinal,
   kmInicial,
+  idVeiculo,
+  idCondutor,
+  idCliente,
   index,
   onDelete,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const { entities } = useEntities([]);
+  console.log("🚀 ~ file: DisplacementItem.tsx:30 ~ entities:", entities)
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -56,12 +61,38 @@ const DisplacementItem = ({
     return "Finalizado";
   };
 
+  const getVehicle = () => {
+    const vehicle = entities.vehicles.find((vehicle) => vehicle.id === idVeiculo)
+    return vehicle?.placa || "-";
+  };
+
+  const getConductor = () => {
+    const conductor = entities.conductors.find(
+      (conductor) => conductor.id === idCondutor
+    );
+
+    const conductorName = conductor?.nome.split(" ")[0];
+    return conductorName || "-";
+  };
+
+  const getCustomer = () => {
+    const customer = entities.customers.find(
+      (customer) => customer.id === idCliente
+    );
+
+    const customerDocument = `${customer?.tipoDocumento} ${customer?.numeroDocumento}`
+    return customerDocument || "-";
+  };
+
   return (
     <TableRow key={id}>
       <TableCell align="center">{index}</TableCell>
       <TableCell align="center">{calculateDistance()}</TableCell>
       <TableCell align="center">{handleFormatInterval()}</TableCell>
       <TableCell align="center">{getStatus()}</TableCell>
+      <TableCell align="center">{getVehicle()}</TableCell>
+      <TableCell align="center">{getConductor()}</TableCell>
+      <TableCell align="center">{getCustomer()}</TableCell>
       <TableCell align="center" size="small">
         <IconButton
           aria-label="delete"

@@ -1,5 +1,7 @@
 import { Displacement } from "@/shared/interfaces/displacement.interface";
-import { DisplacementService } from "@/shared/services";
+import {
+  DisplacementService
+} from "@/shared/services";
 import {
   Paper,
   Table,
@@ -41,9 +43,12 @@ const DisplacementList = ({ displacements }: Props) => {
             <TableHead>
               <TableRow>
                 <TableCell align="center">Nº</TableCell>
-                <TableCell align="center">Deslocamento (Km)</TableCell>
+                <TableCell align="center">Deslocamento</TableCell>
                 <TableCell align="center">Tempo</TableCell>
                 <TableCell align="center">Status</TableCell>
+                <TableCell align="center">Veículo</TableCell>
+                <TableCell align="center">Condutor</TableCell>
+                <TableCell align="center">Cliente</TableCell>
                 <TableCell align="center">Ações</TableCell>
               </TableRow>
             </TableHead>
