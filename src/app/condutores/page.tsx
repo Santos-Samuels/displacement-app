@@ -1,5 +1,5 @@
 "use client";
-import { AppContainer, ConductorList } from "@/components";
+import { AppContainer, ConductorForm, ConductorList } from "@/components";
 import { ConductorService } from "@/shared/services";
 import useSWR from "swr";
 
@@ -8,6 +8,7 @@ const ConductorPage = () => {
 
   return (
     <AppContainer isLoading={isLoading} hasError={error}>
+      <ConductorForm />
       <ConductorList conductors={data} />
     </AppContainer>
   );

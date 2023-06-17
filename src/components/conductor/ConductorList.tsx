@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
+import styles from "../styles.module.css";
 import ConductorItem from "./ConductorItem";
 
 interface Props {
@@ -32,10 +33,10 @@ const ConductorList = ({ conductors }: Props) => {
 
   return (
     <div>
-      <h1>Lista de Condutores</h1>
+      <h1 className={styles.title}>Lista de Condutores</h1>
 
       {conductors?.length ? (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className={styles.table}>
           <Table aria-label="lista de clientes">
             <TableHead>
               <TableRow>

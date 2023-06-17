@@ -8,9 +8,13 @@ export interface Conductor {
 
 export interface ConductorUpdateInput {
   id: number;
-  catergoriaHabilitacao: string;
+  categoriaHabilitacao: string;
   vencimentoHabilitacao: string;
 }
 
-export interface ConductorCreateInput
-  extends Omit<Conductor, "id"> {}
+export interface ConductorCreateInput {
+  nome: string;
+  numeroHabilitacao: string;
+  categoriaHabilitacao: string;
+  vencimentoHabilitacao: string;
+}
