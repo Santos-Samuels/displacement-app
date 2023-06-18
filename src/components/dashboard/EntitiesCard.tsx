@@ -9,7 +9,7 @@ interface Props {
 
 const EntitiesCard = ({ entities }: Props) => {
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} className={styles.section}>
       {Object.entries(entities).map(([key, value]) => (
         <Grid item xs={12} sm={6} md={3} key={key}>
           <Paper elevation={3} className={styles.card}>
