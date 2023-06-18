@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={roboto.className}>{children}</body>
+      <body className={roboto.className} suppressHydrationWarning={true} >{children}</body>
     </html>
   );
 }

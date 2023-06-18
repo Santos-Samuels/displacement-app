@@ -1,7 +1,4 @@
-import { Conductor } from "@/shared/interfaces/conductor.interface";
-import { Customer } from "@/shared/interfaces/customer.interface";
-import { Displacement } from "@/shared/interfaces/displacement.interface";
-import { Vehicle } from "@/shared/interfaces/vehicle.interface";
+import { Entities } from "@/shared/interfaces/entities.interface";
 import {
   ConductorService,
   CustomerService,
@@ -9,13 +6,6 @@ import {
   VehicleService,
 } from "@/shared/services";
 import { useEffect, useState } from "react";
-
-interface Entities {
-  conductors: Conductor[];
-  customers: Customer[];
-  vehicles: Vehicle[];
-  displacements: Displacement[];
-}
 
 const initialEntities: Entities = {
   conductors: [],

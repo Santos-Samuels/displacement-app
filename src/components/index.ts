@@ -2,6 +2,7 @@ import ConductorForm from "./conductor/ConductorForm";
 import ConductorList from "./conductor/ConductorList";
 import CustomerForm from "./customer/CustomerForm";
 import CustomerList from "./customer/CustomerList";
+import EntitiesCard from "./dashboard/EntitiesCard";
 import DisplacementForm from "./displacement/DisplacementForm";
 import DisplacementList from "./displacement/DisplacementList";
 import AppContainer from "./layout/AppContainer";
@@ -18,4 +19,5 @@ export {
   CustomerForm,
   DisplacementForm,
   VehicleForm,
+  EntitiesCard
 };
