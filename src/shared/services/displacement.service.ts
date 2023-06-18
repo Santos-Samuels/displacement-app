@@ -11,7 +11,7 @@ const DisplacementService = () => {
   }
 
   async function update(input: DisplacementUpdateInput) {
-    return api.put(`/v1/deslocamento/encerrardeslocamento/${input.id}`, input);
+    return api.put(`/v1/deslocamento/${input.id}/encerrardeslocamento`, input);
   }
 
   async function remove(id: number) {

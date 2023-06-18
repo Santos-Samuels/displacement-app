@@ -15,6 +15,8 @@ export interface Displacement {
 export interface DisplacementCreateInput {
   kmInicial: number;
   inicioDeslocamento: string;
+  kmFinal?: number;
+  fimDeslocamento?: string;
   checkList: string;
   motivo: string;
   observacao: string;

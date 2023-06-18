@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { useEntities } from "@/hooks/useEntities";
 import { Displacement } from "@/shared/interfaces/displacement.interface";
 import { formatInterval } from "@/shared/utils/calculateInterval";
@@ -8,11 +9,13 @@ import {
   TableRow,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useState } from "react";
+import EditIcon from "@material-ui/icons/Edit";
+import { useContext, useState } from "react";
 
 interface Props extends Displacement {
   index: number;
   onDelete: (id: number) => Promise<void>;
+  onEdit: () => void;
 }
 
 const DisplacementItem = ({
@@ -26,9 +29,11 @@ const DisplacementItem = ({
   idCliente,
   index,
   onDelete,
+  onEdit,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const { entities } = useEntities([]);
+  const { currentDisplacement } = useContext(AppContext);
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -84,7 +89,7 @@ const DisplacementItem = ({
   };
 
   return (
-    <TableRow key={id}>
+    <TableRow key={id} selected={currentDisplacement && currentDisplacement.id === id ? true : false}>
       <TableCell align="center">{index}</TableCell>
       <TableCell align="center">{calculateDistance()}</TableCell>
       <TableCell align="center">{handleFormatInterval()}</TableCell>
@@ -102,6 +107,18 @@ const DisplacementItem = ({
             <CircularProgress size={18} />
           ) : (
             <DeleteIcon fontSize="inherit" />
+          )}
+        </IconButton>
+
+        <IconButton
+          aria-label="edit"
+          onClick={onEdit}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <CircularProgress size={18} />
+          ) : (
+            <EditIcon fontSize="inherit" />
           )}
         </IconButton>
       </TableCell>

@@ -1,3 +1,4 @@
+import { AppContext } from "@/context";
 import { Displacement } from "@/shared/interfaces/displacement.interface";
 import {
   DisplacementService
@@ -11,6 +12,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
+import { useContext } from "react";
 import { toast } from "react-toastify";
 import { useSWRConfig } from "swr";
 import styles from "../styles.module.css";
@@ -22,6 +24,7 @@ interface Props {
 
 const DisplacementList = ({ displacements }: Props) => {
   const { mutate } = useSWRConfig();
+  const { setCurrentDisplacement } = useContext(AppContext);
 
   const handleDelete = async (id: number) => {
     try {
@@ -59,6 +62,7 @@ const DisplacementList = ({ displacements }: Props) => {
                   index={index + 1}
                   key={displacement.id}
                   onDelete={handleDelete}
+                  onEdit={() => setCurrentDisplacement(displacement)}
                 />
               ))}
             </TableBody>
