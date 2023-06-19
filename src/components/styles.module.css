@@ -111,6 +111,80 @@
   margin-bottom: 15px 0 !important;
 }
 
+.menuIcon {
+  color: #FFFFFF;
+}
+
+.appContainer {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  gap: 15px;
+  overflow: hidden;
+}
+
+.appContent {
+  padding: 20px 0;
+  flex: 1;
+  width: auto !important;
+  height: 100vh !important;
+  overflow: scroll;
+}
+
+.sidenav {
+  width: 250px;
+  transition: width 0.3s ease-in-out;
+  min-height: 100vh;
+  background-color: rgb(10,25,41);
+  padding-top: 28px;
+}
+
+.sidenavClosed {
+  composes: sidenav;
+  transition: width 0.3s ease-in-out;
+  width: 60px
+}
+
+.sideitem {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  cursor: pointer;
+  color: #B2BAC2;
+  text-decoration: none;
+}
+
+.activeSideItem {
+  composes: sideitem;
+  background-color: #244f7d2f;
+}
+
+.linkText {
+  padding-left: 16px;
+}
+
+.sideitem:hover {
+  background-color: #244f7d1c;
+}
+
+.menuBtn {
+  align-self: center;
+  align-self: flex-start; 
+  justify-self: flex-end;
+  color: #B2BAC2;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding-left: 20px;
+}
+
+.sideHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  color: #FFFFFF;
+}
+
 @media (min-width: 768px) {
   .form {
     padding: 20px 30px;

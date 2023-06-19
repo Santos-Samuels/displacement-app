@@ -12,7 +12,7 @@ const DisplacementPage = () => {
   );
 
   return (
-    <AppContainer isLoading={isLoading || isEntitiesLoading} hasError={error}>
+    <AppContainer isLoading={isLoading || isEntitiesLoading} hasError={error} title="Deslocamentos">
       <DisplacementForm />
       <DisplacementList displacements={data} />
     </AppContainer>

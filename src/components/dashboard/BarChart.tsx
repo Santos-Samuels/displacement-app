@@ -68,7 +68,7 @@ const BarChart = ({ conductors }: Props) => {
             },
           ]}
           type="bar"
-          height={120}
+          height={200}
           width="100%"
           className={styles.barChart}
           options={{

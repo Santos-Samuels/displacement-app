@@ -38,6 +38,7 @@ const PieChart = ({ displacements }: Props) => {
         type="pie"
         series={getChatData()}
         height={120}
+        width="100%"
         options={{
           labels: ["Em andamento", "Finalizados"],
           plotOptions: {

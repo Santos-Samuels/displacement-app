@@ -7,7 +7,7 @@ const CustomerPage = () => {
   const { data, error, isLoading } = useSWR("/v1/cliente", fetchCustomers);
 
   return (
-    <AppContainer isLoading={isLoading} hasError={error}>
+    <AppContainer isLoading={isLoading} hasError={error} title="Clientes">
       <CustomerForm />
       <CustomerList customers={data} />
     </AppContainer>

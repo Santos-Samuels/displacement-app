@@ -7,7 +7,7 @@ const ConductorPage = () => {
   const { data, error, isLoading } = useSWR("/v1/condutor", fetchConductors);
 
   return (
-    <AppContainer isLoading={isLoading} hasError={error}>
+    <AppContainer isLoading={isLoading} hasError={error} title="Condutores">
       <ConductorForm />
       <ConductorList conductors={data} />
     </AppContainer>

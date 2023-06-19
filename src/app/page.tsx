@@ -37,23 +37,21 @@ export default function Home() {
 
   return (
     <main>
-      <AppContainer isLoading={isLoading || isWeatherLoading}>
-        <h1 className="mb">Dasboard</h1>
-
+      <AppContainer isLoading={isLoading || isWeatherLoading} title="Dashboard">
         <div className="mb">
           <EntitiesCard entities={entities} />
         </div>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} md={6}>
             <WeathersCard weathers={data} />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} md={6}>
             <PieChart displacements={entities.displacements} />
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12}>
             <BarChart conductors={entities.conductors} />
           </Grid>
         </Grid>

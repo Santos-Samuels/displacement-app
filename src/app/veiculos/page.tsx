@@ -7,7 +7,7 @@ const VehiclePage = () => {
   const { data, error, isLoading } = useSWR("/v1/veiculo", fetchVehicles);
 
   return (
-    <AppContainer isLoading={isLoading} hasError={error}>
+    <AppContainer isLoading={isLoading} hasError={error} title="Veículos">
       <VehicleForm />
       <VehicleList vehicles={data} />
     </AppContainer>
