@@ -120,7 +120,7 @@ const ConductorForm = () => {
           setValue(key, new Date(value).toISOString().split("T")[0]);
           return;
         }
-        setValue(key, value);
+        setValue(key as keyof ConductorCreateInput, value);
       });
     }
   }, [currentConductor]);
@@ -179,7 +179,7 @@ const ConductorForm = () => {
                     {...register("numeroHabilitacao", {
                       required: "Informe a CNH",
                       validate: (value) =>
-                        validateEditDate(new Date(value).getTime()),
+                        validateEditDate(value),
                     })}
                   />
                   {errors.numeroHabilitacao && (

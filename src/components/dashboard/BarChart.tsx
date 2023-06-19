@@ -96,7 +96,7 @@ const BarChart = ({ conductors }: Props) => {
             yaxis: {
               tickAmount: 2,
               labels: {
-                formatter: (value) => parseInt(`${value}`),
+                formatter: (value) => parseInt(`${value}`).toString(),
               },
             },
             noData: {

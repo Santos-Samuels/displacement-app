@@ -68,7 +68,7 @@ const VehicleForm = () => {
   useEffect(() => {
     if (currentVehicle) {
       Object.entries(currentVehicle).forEach(([key, value]) => {
-        setValue(key, value);
+        setValue(key as keyof VehicleCreateInput, value);
       });
     }
   }, [currentVehicle]);

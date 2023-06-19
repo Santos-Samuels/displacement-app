@@ -84,7 +84,7 @@ const CustomerForm = () => {
   useEffect(() => {
     if (currentCustomer) {
       Object.entries(currentCustomer).forEach(([key, value]) => {
-        setValue(key, value);
+        setValue(key as keyof CustomerCreateInput, value);
       });
     }
   }, [currentCustomer]);

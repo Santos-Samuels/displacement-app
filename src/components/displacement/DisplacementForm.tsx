@@ -106,7 +106,7 @@ const DisplacementForm = () => {
       Object.entries(currentDisplacement).forEach(([key, value]) => {
         if (key === "fimDeslocamento") return setValue(key, formatDate(value));
 
-        setValue(key, value);
+        setValue(key as keyof DisplacementCreateInput, value);
       });
     }
   }, [currentDisplacement]);
