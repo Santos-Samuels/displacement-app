@@ -8,7 +8,8 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TextField,
 } from "@material-ui/core";
 import { useContext } from "react";
 import { toast } from "react-toastify";
@@ -18,9 +19,10 @@ import VehicleItem from "./VehicleItem";
 
 interface Props {
   vehicles?: Vehicle[];
+  handleFilter: (searchTerm: string) => void;
 }
 
-const VehicleList = ({ vehicles }: Props) => {
+const VehicleList = ({ vehicles, handleFilter }: Props) => {
   const { mutate } = useSWRConfig();
   const { setCurrentVehicle } = useContext(AppContext);
 
@@ -36,7 +38,20 @@ const VehicleList = ({ vehicles }: Props) => {
 
   return (
     <div>
-      <h1 className={styles.title}>Lista de Veículos</h1>
+      <div className={styles.listHeader}>
+        <h1 className={styles.title}>Lista de Veículos</h1>
+
+        <div>
+          <TextField
+            id="standard-basic"
+            label="Filtrar pela Placa ou Modelo"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={(e) => handleFilter(e.target.value.toLowerCase())}
+          />
+        </div>
+      </div>
 
       {vehicles?.length ? (
         <TableContainer className={styles.table} component={Paper}>

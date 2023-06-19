@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@material-ui/core";
 import { useContext } from "react";
 import { toast } from "react-toastify";
@@ -18,9 +19,10 @@ import CustomerItem from "./CustomerItem";
 
 interface Props {
   customers?: Customer[];
+  handleFilter: (searchTerm: string) => void;
 }
 
-const CustomerList = ({ customers }: Props) => {
+const CustomerList = ({ customers, handleFilter }: Props) => {
   const { mutate } = useSWRConfig();
   const { setCurrentCustomer } = useContext(AppContext);
 
@@ -36,7 +38,20 @@ const CustomerList = ({ customers }: Props) => {
 
   return (
     <div>
-      <h1 className={styles.title}>Lista de Clientes</h1>
+      <div className={styles.listHeader}>
+        <h1 className={styles.title}>Lista de Clientes</h1>
+
+        <div>
+          <TextField
+            id="standard-basic"
+            label="Filtrar por Nome ou Documento"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={(e) => handleFilter(e.target.value.toLowerCase())}
+          />
+        </div>
+      </div>
 
       {customers?.length ? (
         <TableContainer className={styles.table} component={Paper}>
@@ -65,7 +80,7 @@ const CustomerList = ({ customers }: Props) => {
           </Table>
         </TableContainer>
       ) : (
-        <p>Não há clientes cadastrados</p>
+        <p>Nenhum clientes encontrado!</p>
       )}
     </div>
   );

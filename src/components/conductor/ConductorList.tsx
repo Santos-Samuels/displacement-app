@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@material-ui/core";
 import { useContext } from "react";
 import { toast } from "react-toastify";
@@ -18,9 +19,10 @@ import ConductorItem from "./ConductorItem";
 
 interface Props {
   conductors?: Conductor[];
+  handleFilter: (searchTerm: string) => void;
 }
 
-const ConductorList = ({ conductors }: Props) => {
+const ConductorList = ({ conductors, handleFilter }: Props) => {
   const { mutate } = useSWRConfig();
   const { setCurrentConductor } = useContext(AppContext);
 
@@ -36,7 +38,20 @@ const ConductorList = ({ conductors }: Props) => {
 
   return (
     <div>
-      <h1 className={styles.title}>Lista de Condutores</h1>
+      <div className={styles.listHeader}>
+        <h1 className={styles.title}>Lista de Condutores</h1>
+
+        <div>
+          <TextField
+            id="standard-basic"
+            label="Filtrar por Nome ou CNH"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={(e) => handleFilter(e.target.value.toLowerCase())}
+          />
+        </div>
+      </div>
 
       {conductors?.length ? (
         <TableContainer component={Paper} className={styles.table}>
@@ -52,7 +67,7 @@ const ConductorList = ({ conductors }: Props) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {conductors.map((conductor, index) => (
+              {conductors?.map((conductor, index) => (
                 <ConductorItem
                   {...conductor}
                   index={index + 1}
@@ -65,7 +80,7 @@ const ConductorList = ({ conductors }: Props) => {
           </Table>
         </TableContainer>
       ) : (
-        <p>Não há condutores cadastrados</p>
+        <p>Nenhum conductor encontrado!</p>
       )}
     </div>
   );

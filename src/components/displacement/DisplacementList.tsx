@@ -1,8 +1,6 @@
 import { AppContext } from "@/context";
 import { Displacement } from "@/shared/interfaces/displacement.interface";
-import {
-  DisplacementService
-} from "@/shared/services";
+import { DisplacementService } from "@/shared/services";
 import {
   Paper,
   Table,
@@ -11,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from "@material-ui/core";
 import { useContext } from "react";
 import { toast } from "react-toastify";
@@ -20,9 +19,10 @@ import DisplacementItem from "./DisplacementItem";
 
 interface Props {
   displacements?: Displacement[];
+  handleFilter: (searchTerm: string) => void;
 }
 
-const DisplacementList = ({ displacements }: Props) => {
+const DisplacementList = ({ displacements, handleFilter }: Props) => {
   const { mutate } = useSWRConfig();
   const { setCurrentDisplacement } = useContext(AppContext);
 
@@ -38,7 +38,20 @@ const DisplacementList = ({ displacements }: Props) => {
 
   return (
     <div>
-      <h1 className={styles.title}>Lista de Deslocamentos</h1>
+      <div className={styles.listHeader}>
+        <h1 className={styles.title}>Lista de Deslocamentos</h1>
+
+        <div>
+          <TextField
+            id="standard-basic"
+            label="Filtrar por Placa ou Nome do Condutor"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={(e) => handleFilter(e.target.value.toLowerCase())}
+          />
+        </div>
+      </div>
 
       {displacements?.length ? (
         <TableContainer className={styles.table} component={Paper}>
@@ -69,7 +82,7 @@ const DisplacementList = ({ displacements }: Props) => {
           </Table>
         </TableContainer>
       ) : (
-        <p>Não há deslocamentos cadastrados</p>
+        <p>Nenhum deslocamentos encontrado!</p>
       )}
     </div>
   );
