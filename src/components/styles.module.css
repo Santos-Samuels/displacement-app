@@ -119,15 +119,14 @@
   display: grid !important;
   grid-template-columns: auto 1fr;
   gap: 15px;
-  overflow: hidden;
 }
 
 .appContent {
-  padding: 20px 0;
+  padding: 20px 10px;
   flex: 1;
   width: auto !important;
-  height: 100vh !important;
-  overflow: scroll;
+  height: 100vh;
+  overflow-x: scroll;
 }
 
 .sidenav {
@@ -214,5 +213,15 @@
   
   .weatherCard svg {
     font-size: 20px;
+  }
+
+  .appContent {
+    padding: 20px 40px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .appContent {
+    padding: 20px 80px;
   }
 }

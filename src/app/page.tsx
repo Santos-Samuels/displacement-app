@@ -36,27 +36,25 @@ export default function Home() {
   });
 
   return (
-    <main>
-      <AppContainer isLoading={isLoading || isWeatherLoading} title="Dashboard">
-        <div className="mb">
-          <EntitiesCard entities={entities} />
-        </div>
+    <AppContainer title="Dashboard">
+      <div className="mb">
+        <EntitiesCard entities={entities} />
+      </div>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <WeathersCard weathers={data} />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <PieChart displacements={entities.displacements} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <BarChart conductors={entities.conductors} />
-          </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <WeathersCard weathers={data} />
         </Grid>
-      </AppContainer>
-    </main>
+
+        <Grid item xs={12} md={6}>
+          <PieChart displacements={entities.displacements} />
+        </Grid>
+
+        <Grid item xs={12}>
+          <BarChart conductors={entities.conductors} />
+        </Grid>
+      </Grid>
+    </AppContainer>
   );
 }
 
