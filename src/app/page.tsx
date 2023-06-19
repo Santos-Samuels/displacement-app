@@ -31,7 +31,7 @@ export default function Home() {
     data,
     error,
     isLoading: isWeatherLoading,
-  } = useSWR<Weather>("/v1/weatherforecast", fetchWeather, {
+  } = useSWR<Weather[]>("/v1/weatherforecast", fetchWeather, {
     revalidateOnFocus: false,
   });
 
