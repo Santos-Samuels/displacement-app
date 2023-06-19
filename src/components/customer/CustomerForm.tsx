@@ -36,7 +36,7 @@ const CustomerForm = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const { currentCustomer, setCurrentCustomer } = useContext(AppContext);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { mutate } = useSWRConfig();
 
   const onSubmit: SubmitHandler<CustomerCreateInput> = async (data) => {
@@ -91,14 +91,13 @@ const CustomerForm = () => {
 
   return (
     <div className={styles.form}>
-      <Grid container justifyContent="space-between" alignItems="center">
+      <Grid container justifyContent="space-between" alignItems="center" onClick={() => setOpen(!open)}>
         <h1 className={styles.title}>
           {currentCustomer ? "Atualizar Cliente" : "Adicionar Cliente"}
         </h1>
 
         <IconButton
           aria-label="delete"
-          onClick={() => setOpen(!open)}
           size="small"
         >
           {open ? (

@@ -37,7 +37,7 @@ const ConductorForm = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const { currentConductor, setCurrentConductor } = useContext(AppContext);
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { mutate } = useSWRConfig();
 
   const onSubmit: SubmitHandler<ConductorCreateInput> = async (data) => {
@@ -127,11 +127,10 @@ const ConductorForm = () => {
 
   return (
     <div className={styles.form}>
-      <Grid container justifyContent="space-between" alignItems="center">
+      <Grid container justifyContent="space-between" alignItems="center" onClick={() => setOpen(!open)}>
         <h1 className={styles.title}>Adicionar Condutor</h1>
         <IconButton
           aria-label="delete"
-          onClick={() => setOpen(!open)}
           size="small"
         >
           {open ? (

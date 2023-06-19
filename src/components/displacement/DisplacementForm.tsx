@@ -40,7 +40,7 @@ const DisplacementForm = () => {
     "🚀 ~ file: DisplacementForm.tsx:38 ~ DisplacementForm ~ currentDisplacement:",
     currentDisplacement
   );
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const { mutate } = useSWRConfig();
   const { entities } = useEntities([]);
   const { conductors, customers, vehicles } = entities;
@@ -113,7 +113,7 @@ const DisplacementForm = () => {
 
   return (
     <div className={styles.form}>
-      <Grid container justifyContent="space-between" alignItems="center">
+      <Grid container justifyContent="space-between" alignItems="center" onClick={() => setOpen(!open)}>
         <h1 className={styles.title}>
           {currentDisplacement
             ? "Encerrar Deslocamento"
@@ -122,7 +122,6 @@ const DisplacementForm = () => {
 
         <IconButton
           aria-label="delete"
-          onClick={() => setOpen(!open)}
           size="small"
         >
           {open ? (

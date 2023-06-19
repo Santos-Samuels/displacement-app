@@ -54,7 +54,8 @@ const BarChart = ({ conductors }: Props) => {
       countExpired[day as keyof WeekDays]++;
     });
 
-    return Object.values(countExpired);
+    const data = Object.values(countExpired)
+    return data.some(value => value > 0) ? data : [];
   };
 
   return (
